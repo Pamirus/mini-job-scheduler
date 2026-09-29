@@ -20,17 +20,20 @@ public:
 Scheduler::Scheduler(size_t workerCount)
     : d(std::make_unique<SchedulerPrivate>(workerCount)) {}
 
-Scheduler::~Scheduler() {
+Scheduler::~Scheduler()
+{
     stop();
 }
 
-void Scheduler::addJob(const std::string& name, uint16_t duration, JobPriority priority) {
+void Scheduler::addJob(const std::string& name, uint16_t duration, JobPriority priority)
+{
     uint16_t id  = d->nextJobId++;
     auto     job = std::make_shared<Job>(id, name, duration, priority);
     d->queue.push(job);
 }
 
-void Scheduler::start() {
+void Scheduler::start()
+{
     if (d->isRunning) return;
 
     d->isRunning = true;
@@ -41,7 +44,8 @@ void Scheduler::start() {
     }
 }
 
-void Scheduler::stop() { //! @todo stop does nothing. debug&fix
+void Scheduler::stop()
+{
     if (!d->isRunning) return;
 
     d->queue.stop();
@@ -53,14 +57,17 @@ void Scheduler::stop() { //! @todo stop does nothing. debug&fix
     d->isRunning = false;
 }
 
-bool Scheduler::cancelJob(uint16_t id) {
+bool Scheduler::cancelJob(uint16_t id)
+{
     return d->queue.cancel(id);
 }
 
-std::vector<std::shared_ptr<Job>> Scheduler::listJobs() const {
+std::vector<std::shared_ptr<Job>> Scheduler::listJobs() const
+{
     return d->queue.getAllJobs();
 }
 
-std::shared_ptr<Job> Scheduler::findJob(uint16_t id) const {
+std::shared_ptr<Job> Scheduler::findJob(uint16_t id) const
+{
     return d->queue.findById(id);
 }

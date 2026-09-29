@@ -28,7 +28,8 @@ public:
 JobQueue::JobQueue() : d(std::make_unique<JobQueuePrivate>()) {}
 JobQueue::~JobQueue() = default;
 
-void JobQueue::push(std::shared_ptr<Job> job) {
+void JobQueue::push(std::shared_ptr<Job> job)
+{
     {
         std::lock_guard<std::mutex> lock(d->mutex);
         d->priorityQueue.push(job);
@@ -37,7 +38,8 @@ void JobQueue::push(std::shared_ptr<Job> job) {
     d->cv.notify_one();
 }
 
-std::shared_ptr<Job> JobQueue::pop() {
+std::shared_ptr<Job> JobQueue::pop()
+{
     std::unique_lock<std::mutex> lock(d->mutex);
     d->cv.wait(lock, [this]() {
         return !d->priorityQueue.empty() || d->isStopped;
@@ -52,7 +54,8 @@ std::shared_ptr<Job> JobQueue::pop() {
     return job;
 }
 
-bool JobQueue::cancel(uint16_t id) {
+bool JobQueue::cancel(uint16_t id)
+{
     std::lock_guard<std::mutex> lock(d->mutex);
     auto it = std::find_if(d->allJobsHistory.begin(), d->allJobsHistory.end(),
                            [id](const std::shared_ptr<Job>& job) { return job->getId() == id; });
@@ -63,19 +66,22 @@ bool JobQueue::cancel(uint16_t id) {
     return false;
 }
 
-std::shared_ptr<Job> JobQueue::findById(uint16_t id) const {
+std::shared_ptr<Job> JobQueue::findById(uint16_t id) const
+{
     std::lock_guard<std::mutex> lock(d->mutex);
     auto it = std::find_if(d->allJobsHistory.begin(), d->allJobsHistory.end(),
                            [id](const std::shared_ptr<Job>& job) { return job->getId() == id; });
     return (it != d->allJobsHistory.end()) ? *it : nullptr;
 }
 
-std::vector<std::shared_ptr<Job>> JobQueue::getAllJobs() const {
+std::vector<std::shared_ptr<Job>> JobQueue::getAllJobs() const
+{
     std::lock_guard<std::mutex> lock(d->mutex);
     return d->allJobsHistory;
 }
 
-void JobQueue::stop() {
+void JobQueue::stop()
+{
     {
         std::lock_guard<std::mutex> lock(d->mutex);
         d->isStopped = true;
@@ -83,7 +89,8 @@ void JobQueue::stop() {
     d->cv.notify_all();
 }
 
-bool JobQueue::isEmpty() const {
+bool JobQueue::isEmpty() const
+{
     std::lock_guard<std::mutex> lock(d->mutex);
     return d->priorityQueue.empty();
 }

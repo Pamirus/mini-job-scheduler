@@ -20,7 +20,8 @@ public:
     std::thread         thread;
 };
 
-void WorkerPrivate::run() {
+void WorkerPrivate::run()
+{
     while (running) {
         std::shared_ptr<Job> job = queue.pop();
         if (!job)
@@ -47,16 +48,19 @@ void WorkerPrivate::run() {
 Worker::Worker(uint8_t id, JobQueue& queue)
     : d(std::make_unique<WorkerPrivate>(id, queue)) {}
 
-Worker::~Worker() {
+Worker::~Worker()
+{
     stop();
 }
 
-void Worker::start() {
+void Worker::start()
+{
     d->running = true;
     d->thread = std::thread(&WorkerPrivate::run, d.get());
 }
 
-void Worker::stop() {
+void Worker::stop()
+{
     if (d->running) {
         d->running = false;
         if (d->thread.joinable()) {
