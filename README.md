@@ -1,5 +1,4 @@
 # Mini Job Scheduler
-===================
 
 A lightweight command-line job scheduler implemented in modern C++.
 
@@ -19,4 +18,5 @@ Technologies
 - std::thread
 - std::mutex
 - std::condition_variable
+- PIMPL idiom
 - CMake
