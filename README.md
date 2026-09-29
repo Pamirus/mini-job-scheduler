@@ -38,6 +38,7 @@ cmake --build build
 | `start`                             | Start the worker threads                        |
 | `stop`                              | Stop the workers                                |
 | `cancel <id>`                       | Cancel a job that is still pending              |
+| `status <id>`                       | Show a job's priority, status, duration and creation time |
 | `help`                              | Show available commands                         |
 | `quit`                              | Stop the scheduler and exit                     |
 
@@ -48,9 +49,9 @@ Example session:
 Type 'help' for commands.
 
 > add backup 3 high
-Job added successfully.
+Job backup added.
 > add cleanup 2 low
-Job added successfully.
+Job cleanup added.
 > start
 Scheduler started with workers.
 
@@ -96,5 +97,4 @@ so `const` member functions can't modify the private data by accident.
 
 ## Roadmap
 
-- `status <id>` command in the CLI
 - Command dispatch through polymorphism instead of an `if/else` chain

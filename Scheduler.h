@@ -20,7 +20,7 @@ public:
     bool cancelJob(uint16_t id);
 
     std::vector<std::shared_ptr<Job>>   listJobs() const;
-    std::shared_ptr<Job>                getJobStatus(uint16_t id) const;
+    std::shared_ptr<Job>                findJob(uint16_t id) const;
 
 private:
     std::experimental::propagate_const<std::unique_ptr<SchedulerPrivate>> d;

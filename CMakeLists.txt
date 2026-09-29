@@ -9,6 +9,7 @@ add_executable(mini-job-scheduler main.cpp Job.h Job.cpp JobQueue.h JobQueue.cpp
     Worker.h Worker.cpp
     Scheduler.h Scheduler.cpp
     CommandLineInterface.h CommandLineInterface.cpp
+    Commands.h Commands.cpp
 )
 
 include(GNUInstallDirs)

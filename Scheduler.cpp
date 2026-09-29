@@ -41,7 +41,7 @@ void Scheduler::start() {
     }
 }
 
-void Scheduler::stop() { //! @todo stop does not run. debug&fix
+void Scheduler::stop() { //! @todo stop does nothing. debug&fix
     if (!d->isRunning) return;
 
     d->queue.stop();
@@ -61,6 +61,6 @@ std::vector<std::shared_ptr<Job>> Scheduler::listJobs() const {
     return d->queue.getAllJobs();
 }
 
-std::shared_ptr<Job> Scheduler::getJobStatus(uint16_t id) const { //! @todo add status command to the cli
+std::shared_ptr<Job> Scheduler::findJob(uint16_t id) const {
     return d->queue.findById(id);
 }
