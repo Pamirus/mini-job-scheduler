@@ -8,10 +8,7 @@
 
 class CommandLineInterfacePrivate {
 public:
-    explicit CommandLineInterfacePrivate(Scheduler& scheduler) : scheduler(scheduler)
-    {
-        registerCommands(commands, scheduler);
-    }
+    explicit CommandLineInterfacePrivate(Scheduler& scheduler);
 
     Scheduler& scheduler;
     CommandMap commands;
@@ -21,6 +18,12 @@ CommandLineInterface::CommandLineInterface(Scheduler& scheduler)
     : d(std::make_unique<CommandLineInterfacePrivate>(scheduler)) {}
 
 CommandLineInterface::~CommandLineInterface() = default;
+
+
+CommandLineInterfacePrivate::CommandLineInterfacePrivate(Scheduler &scheduler) : scheduler(scheduler)
+{
+    registerCommands(commands, scheduler);
+}
 
 void CommandLineInterface::run() 
 {

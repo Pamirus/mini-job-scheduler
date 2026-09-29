@@ -4,7 +4,7 @@
 
 class JobPrivate {
 public:
-    JobPrivate(uint16_t id, std::string name, uint16_t duration, JobPriority priority)
+    explicit JobPrivate(uint16_t id, std::string name, uint16_t duration, JobPriority priority)
         : id(id)
         , name(std::move(name))
         , duration(duration)

@@ -10,7 +10,7 @@
 
 class WorkerPrivate {
 public:
-    WorkerPrivate(uint8_t id, JobQueue& queue) : id(id), queue(queue), running(false) {}
+    explicit WorkerPrivate(uint8_t id, JobQueue& queue) : id(id), queue(queue), running(false) {}
 
     void run();
 

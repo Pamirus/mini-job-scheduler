@@ -8,7 +8,7 @@
 
 class SchedulerPrivate {
 public:
-    SchedulerPrivate(size_t workerCount) : workerCount(workerCount), nextJobId(1) {}
+    explicit SchedulerPrivate(size_t workerCount) : workerCount(workerCount), nextJobId(1) {}
 
     size_t                                  workerCount;
     std::atomic<uint16_t>                   nextJobId;
