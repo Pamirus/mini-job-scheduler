@@ -37,6 +37,7 @@ void Scheduler::start()
     if (d->isRunning) return;
 
     d->isRunning = true;
+    d->queue.start();
     for (size_t i = 0; i < d->workerCount; ++i) {
         auto worker = std::make_unique<Worker>(static_cast<uint8_t>(i + 1), d->queue);
         worker->start();

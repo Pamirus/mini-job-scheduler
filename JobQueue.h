@@ -29,7 +29,7 @@ public:
     //! Jobs come out highest priority first; jobs with the same priority do not
     //! necessarily come out in the order they were pushed. Cancelled jobs are
     //! returned too, so the caller has to skip them.
-    //! @return The next job, or @c nullptr once the queue is stopped and empty.
+    //! @return The next job, or @c nullptr if the queue is stopped.
     std::shared_ptr<Job> pop();
 
     //! @brief Cancels a job that has not started yet.
@@ -44,10 +44,13 @@ public:
     //! Returns every job ever pushed, in the order they were pushed.
     std::vector<std::shared_ptr<Job>> getAllJobs() const;
 
+    //! Reopens the queue after stop(), so pop() hands out jobs again.
+    void start();
+
     //! @brief Stops the queue and wakes up all waiting workers.
     //!
-    //! pop() keeps returning the jobs still in the queue until it is empty.
-    //! A stopped queue cannot be restarted.
+    //! From then on pop() returns @c nullptr. Jobs still in the queue stay there
+    //! and are handed out again after start().
     void stop();
 
     //! Returns @c true if no job is waiting to be popped, cancelled ones included.

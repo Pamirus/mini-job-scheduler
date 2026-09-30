@@ -12,9 +12,9 @@ class WorkerPrivate;
 
 //! @brief Runs jobs from a JobQueue on its own thread.
 //!
-//! A worker keeps taking jobs until the queue runs dry after being stopped, or
-//! until the worker itself is stopped. It runs a job by sleeping for the job's
-//! duration and reports the start and the end on standard output.
+//! A worker keeps taking jobs until the queue or the worker itself is stopped.
+//! It runs a job by sleeping for the job's duration and reports the start and
+//! the end on standard output.
 class Worker
 {
 public:
@@ -31,10 +31,6 @@ public:
     void start();
 
     //! @brief Stops the worker and waits for its thread to exit.
-    //!
-    //! A job that has already started is finished first.
-    //! @warning Call JobQueue::stop() first. This call does not wake up a worker
-    //!          that is waiting in JobQueue::pop(), so it would block forever.
     void stop();
 
 private:

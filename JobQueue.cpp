@@ -45,7 +45,7 @@ std::shared_ptr<Job> JobQueue::pop()
         return !d->priorityQueue.empty() || d->isStopped;
     });
 
-    if (d->isStopped && d->priorityQueue.empty()) {
+    if (d->isStopped || d->priorityQueue.empty()) {
         return nullptr;
     }
 
@@ -78,6 +78,12 @@ std::vector<std::shared_ptr<Job>> JobQueue::getAllJobs() const
 {
     std::lock_guard<std::mutex> lock(d->mutex);
     return d->allJobsHistory;
+}
+
+void JobQueue::start()
+{
+    std::lock_guard<std::mutex> lock(d->mutex);
+    d->isStopped = false;
 }
 
 void JobQueue::stop()
