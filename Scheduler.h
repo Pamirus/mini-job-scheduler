@@ -23,6 +23,8 @@ public:
 
     //! Stops the scheduler; see stop().
     ~Scheduler();
+    Scheduler(const Scheduler&) = delete;
+    Scheduler& operator=(const Scheduler&) = delete;
 
     //! @brief Queues a job that runs for @p duration seconds.
     //!

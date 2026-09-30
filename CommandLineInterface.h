@@ -21,6 +21,8 @@ public:
     //! Creates the interface and its commands; @p scheduler must outlive it.
     explicit CommandLineInterface(Scheduler& scheduler);
     ~CommandLineInterface();
+    CommandLineInterface(const CommandLineInterface&) = delete;
+    CommandLineInterface& operator=(const CommandLineInterface&) = delete;
 
     //! @brief Reads and runs commands until @c quit or the end of input.
     //!

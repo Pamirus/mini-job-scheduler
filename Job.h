@@ -39,6 +39,8 @@ public:
     //! Creates a @c PENDING job, stamped with the current time.
     explicit Job(uint16_t id, std::string name, uint16_t durationSec, JobPriority priority);
     ~Job();
+    Job(const Job&) = delete;
+    Job& operator=(const Job&) = delete;
 
     uint16_t       getId() const;            //!< Id assigned by the scheduler.
     std::string    getName() const;          //!< Name given when the job was added.

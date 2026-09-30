@@ -25,6 +25,8 @@ public:
 
     //! Stops the worker; see stop().
     ~Worker();
+    Worker(const Worker&) = delete;
+    Worker& operator=(const Worker&) = delete;
 
     //! @brief Starts the worker thread.
     //! @pre The worker is not running.
