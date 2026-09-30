@@ -25,8 +25,6 @@ Job::Job(uint16_t id, std::string name, uint16_t durationSec, JobPriority priori
     : d(std::make_unique<JobPrivate>(id, std::move(name), durationSec, priority)) {}
 
 Job::~Job()                         = default;
-Job::Job(Job&&) noexcept            = default;
-Job& Job::operator=(Job&&) noexcept = default;
 
 uint16_t    Job::getId() const {            return d->id;           }
 std::string Job::getName() const {          return d->name;         }

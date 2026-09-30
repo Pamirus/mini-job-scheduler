@@ -37,7 +37,7 @@ class Job
 {
 public:
     //! Creates a @c PENDING job, stamped with the current time.
-    Job(uint16_t id, std::string name, uint16_t durationSec, JobPriority priority);
+    explicit Job(uint16_t id, std::string name, uint16_t durationSec, JobPriority priority);
     ~Job();
 
     uint16_t       getId() const;            //!< Id assigned by the scheduler.
@@ -61,11 +61,6 @@ public:
     std::string priorityToString() const;
     //! Status as upper-case text, e.g. @c "PENDING".
     std::string statusToString() const;
-
-    Job(Job&&) noexcept;
-    Job& operator=(Job&&) noexcept;
-    Job(const Job&) = delete;
-    Job& operator=(const Job&) = delete;
 
 private:
     std::experimental::propagate_const<std::unique_ptr<JobPrivate>> d;
