@@ -24,7 +24,7 @@ public:
 Job::Job(uint16_t id, std::string name, uint16_t durationSec, JobPriority priority)
     : d(std::make_unique<JobPrivate>(id, std::move(name), durationSec, priority)) {}
 
-Job::~Job()                         = default;
+Job::~Job() = default;
 
 uint16_t    Job::getId() const {            return d->id;           }
 std::string Job::getName() const {          return d->name;         }
@@ -32,11 +32,6 @@ uint16_t    Job::getDuration() const {      return d->duration;     }
 JobPriority Job::getPriority() const {      return d->priority;     }
 JobStatus   Job::getStatus() const {        return d->status;       }
 std::time_t Job::getCreationTime() const {  return d->creationTime; }
-
-void Job::setStatus(JobStatus status)
-{
-    d->status = status;
-}
 
 bool Job::changeStatus(JobStatus from, JobStatus to)
 {

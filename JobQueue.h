@@ -1,6 +1,3 @@
-//! @file
-//! @brief The JobQueue class.
-
 #ifndef JOBQUEUE_H
 #define JOBQUEUE_H
 
@@ -11,10 +8,8 @@
 class Job;
 class JobQueuePrivate;
 
-//! @brief Thread-safe priority queue that hands jobs to the workers.
-//!
-//! Besides the jobs waiting to run, the queue keeps every job ever pushed, so
-//! finished and cancelled jobs can still be listed and looked up.
+//! Thread-safe priority queue shared by the scheduler and its workers. It also
+//! keeps every job ever pushed, so finished jobs can still be listed and found.
 class JobQueue
 {
 public:
@@ -25,39 +20,25 @@ public:
     JobQueue(JobQueue&&) = delete;
     JobQueue& operator=(JobQueue&&) = delete;
 
-    //! Adds @p job to the queue and wakes up one waiting worker.
     void push(std::shared_ptr<Job> job);
 
-    //! @brief Blocks until a job is available or the queue is stopped.
-    //!
-    //! Jobs come out highest priority first; jobs with the same priority do not
-    //! necessarily come out in the order they were pushed. Cancelled jobs are
-    //! returned too, so the caller has to skip them.
-    //! @return The next job, or @c nullptr if the queue is stopped.
+    //! Blocks until a job is available and returns the highest-priority one, or
+    //! @c nullptr once the queue is stopped. Cancelled jobs are returned too.
     std::shared_ptr<Job> pop();
 
-    //! @brief Cancels a job that has not started yet.
-    //!
-    //! The job stays in the queue with status @c CANCELLED; see pop().
-    //! @return @c true if a @c PENDING job with this @p id was found.
+    //! Cancels a job that is still @c PENDING; it stays in the queue until popped.
     bool cancel(uint16_t id);
 
-    //! Returns the job with the given @p id, or @c nullptr if there is none.
     std::shared_ptr<Job> findById(uint16_t id) const;
-
-    //! Returns every job ever pushed, in the order they were pushed.
     std::vector<std::shared_ptr<Job>> getAllJobs() const;
 
-    //! Reopens the queue after stop(), so pop() hands out jobs again.
+    //! Reopens the queue after stop().
     void start();
 
-    //! @brief Stops the queue and wakes up all waiting workers.
-    //!
-    //! From then on pop() returns @c nullptr. Jobs still in the queue stay there
-    //! and are handed out again after start().
+    //! Wakes up waiting workers and makes pop() return @c nullptr; jobs still in
+    //! the queue wait for start().
     void stop();
 
-    //! Returns @c true if no job is waiting to be popped, cancelled ones included.
     bool isEmpty() const;
 
 private:

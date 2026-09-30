@@ -1,6 +1,3 @@
-//! @file
-//! @brief The CommandLineInterface class.
-
 #ifndef COMMANDLINEINTERFACE_H
 #define COMMANDLINEINTERFACE_H
 
@@ -11,14 +8,11 @@ class Scheduler;
 class CommandLineInterfacePrivate;
 enum class JobPriority : uint8_t;
 
-//! @brief Interactive command loop on standard input and output.
-//!
-//! Each input line starts with a command name. The matching Command (see
-//! registerCommands()) runs with the rest of the line as its arguments.
+//! Interactive command loop on standard input and output.
 class CommandLineInterface
 {
 public:
-    //! Creates the interface and its commands; @p scheduler must outlive it.
+    //! @p scheduler must outlive the interface.
     explicit CommandLineInterface(Scheduler& scheduler);
     ~CommandLineInterface();
     CommandLineInterface(const CommandLineInterface&) = delete;
@@ -26,9 +20,7 @@ public:
     CommandLineInterface(CommandLineInterface&&) = delete;
     CommandLineInterface& operator=(CommandLineInterface&&) = delete;
 
-    //! @brief Reads and runs commands until @c quit or the end of input.
-    //!
-    //! Stops the scheduler before returning.
+    //! Runs commands until @c quit or end of input, then stops the scheduler.
     void run();
 
 private:
