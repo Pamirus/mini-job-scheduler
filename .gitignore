@@ -1,5 +1,6 @@
 build
 .qtcreator
+.DS_Store
 
 # Created by https://www.toptal.com/developers/gitignore/api/c++,qtcreator
 # Edit at https://www.toptal.com/developers/gitignore?templates=c++,qtcreator

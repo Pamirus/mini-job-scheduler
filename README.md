@@ -14,12 +14,11 @@ Jobs are queued by priority and executed concurrently by a pool of worker thread
 ## Requirements
 
 - CMake 3.16+
-- A C++14 compiler with **libstdc++** (e.g. GCC)
+- A C++14 compiler with GCC's libstdc++ or Clang's libc++ (Apple Clang works out of the box)
 
-> **Note:** The project uses `std::experimental::propagate_const`, which is available
-> in libstdc++ but not in libc++ (Apple Clang's default) or MSVC. On macOS, build with
-> GCC from Homebrew, for example:
-> `cmake -S . -B build -DCMAKE_CXX_COMPILER=g++-14`
+> **Note:** The project uses `std::experimental::propagate_const` from the Library
+> Fundamentals TS v2. It isn't part of the C++ standard itself, so not every standard
+> library provides it; libstdc++ and libc++ do.
 
 ## Build & Run
 

@@ -14,6 +14,8 @@ add_executable(mini-job-scheduler main.cpp
     Commands.h Commands.cpp
 )
 
+target_compile_options(mini-job-scheduler PRIVATE -Wall -Wextra -Wpedantic)
+
 include(GNUInstallDirs)
 install(TARGETS mini-job-scheduler
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
