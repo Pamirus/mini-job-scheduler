@@ -28,6 +28,7 @@ public:
     void run();
 
 private:
-    std::experimental::propagate_const<std::unique_ptr<CommandLineInterfacePrivate>> d;};
+    std::experimental::propagate_const<std::unique_ptr<CommandLineInterfacePrivate>> d;
+};
 
 #endif // COMMANDLINEINTERFACE_H
