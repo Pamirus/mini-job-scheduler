@@ -2,8 +2,9 @@
 
 #include <ctime>
 #include <iomanip>
-#include <iostream>
+#include <limits>
 
+#include "Console.h"
 #include "Job.h"
 #include "Scheduler.h"
 
@@ -26,13 +27,22 @@ public:
     void execute(std::stringstream& args) override
     {
         std::string name, prioStr;
-        uint16_t duration;
+        int duration;
         if (!(args >> name >> duration >> prioStr)) {
-            std::cout << "Usage: " << usage() << "\n";
+            print("Usage: " + usage() + "\n");
             return;
         }
-        scheduler.addJob(name, duration, parsePriority(prioStr));
-        std::cout << "Job " << name << " added.\n";
+        if (duration < 0 || duration > maxDuration) {
+            print("Duration must be between 0 and " + std::to_string(maxDuration) + " seconds.\n");
+            return;
+        }
+        JobPriority priority{};
+        if (!parsePriority(prioStr, priority)) {
+            print("Unknown priority '" + prioStr + "'. Use low, normal or high.\n");
+            return;
+        }
+        scheduler.addJob(name, static_cast<uint16_t>(duration), priority);
+        print("Job " + name + " added.\n");
     }
 
     std::string usage() const override
@@ -41,11 +51,13 @@ public:
     }
 
 private:
-    static JobPriority parsePriority(const std::string& str)
+    static constexpr int maxDuration = std::numeric_limits<uint16_t>::max();
+    static bool parsePriority(const std::string& str, JobPriority& priority)
     {
-        if (str == "high"   || str == "HIGH"  ) return JobPriority::HIGH;
-        if (str == "normal" || str == "NORMAL") return JobPriority::NORMAL;
-        return JobPriority::LOW;
+        if (str == "low"    || str == "LOW"   ) { priority = JobPriority::LOW;    return true; }
+        if (str == "normal" || str == "NORMAL") { priority = JobPriority::NORMAL; return true; }
+        if (str == "high"   || str == "HIGH"  ) { priority = JobPriority::HIGH;   return true; }
+        return false;
     }
 };
 
@@ -57,18 +69,20 @@ public:
     void execute(std::stringstream&) override
     {
         auto jobs = scheduler.listJobs();
-        std::cout << "\n" << std::left << std::setw(6) << "ID"
-                  << std::setw(15) << "NAME"
-                  << std::setw(10) << "PRIORITY"
-                  << std::setw(12) << "STATUS" << "\n";
-        std::cout << std::string(43, '-') << "\n";
+        std::ostringstream out;
+        out << "\n" << std::left << std::setw(6) << "ID"
+            << std::setw(15) << "NAME"
+            << std::setw(10) << "PRIORITY"
+            << std::setw(12) << "STATUS" << "\n";
+        out << std::string(43, '-') << "\n";
         for (const auto& job : jobs) {
-            std::cout << std::left << std::setw(6) << job->getId()
+            out << std::left << std::setw(6) << job->getId()
             << std::setw(15) << job->getName()
             << std::setw(10) << job->priorityToString()
             << std::setw(12) << job->statusToString() << "\n";
         }
-        std::cout << std::endl;
+        out << "\n";
+        print(out.str());
     }
 
     std::string usage() const override
@@ -85,7 +99,7 @@ public:
     void execute(std::stringstream&) override
     {
         scheduler.start();
-        std::cout << "Scheduler started with workers.\n";
+        print("Scheduler started with workers.\n");
     }
 
     std::string usage() const override
@@ -102,7 +116,7 @@ public:
     void execute(std::stringstream&) override
     {
         scheduler.stop();
-        std::cout << "Scheduler stopped.\n";
+        print("Scheduler stopped.\n");
     }
 
     std::string usage() const override
@@ -120,13 +134,13 @@ public:
     {
         uint16_t id;
         if (!(args >> id)) {
-            std::cout << "Usage: " << usage() << "\n";
+            print("Usage: " + usage() + "\n");
             return;
         }
         if (scheduler.cancelJob(id))
-            std::cout << "Job " << id << " cancelled.\n";
+            print("Job " + std::to_string(id) + " cancelled.\n");
         else
-            std::cout << "Cannot cancel job (Not found or already executing/completed).\n";
+            print("Cannot cancel job (Not found or already executing/completed).\n");
     }
 
     std::string usage() const override
@@ -144,20 +158,22 @@ public:
     {
         uint16_t id;
         if (!(args >> id)) {
-            std::cout << "Usage: " << usage() << "\n";
+            print("Usage: " + usage() + "\n");
             return;
         }
         auto job = scheduler.findJob(id);
         if (!job) {
-            std::cout << "Job " << id << " not found.\n";
+            print("Job " + std::to_string(id) + " not found.\n");
             return;
         }
         std::time_t created = job->getCreationTime();
-        std::cout << "Name:     " << job->getName() << "\n"
-                  << "Priority: " << job->priorityToString() << "\n"
-                  << "Status:   " << job->statusToString() << "\n"
-                  << "Duration: " << job->getDuration() << " sec\n"
-                  << "Created:  " << std::put_time(std::localtime(&created), "%H:%M:%S") << "\n";
+        std::ostringstream out;
+        out << "Name:     " << job->getName() << "\n"
+            << "Priority: " << job->priorityToString() << "\n"
+            << "Status:   " << job->statusToString() << "\n"
+            << "Duration: " << job->getDuration() << " sec\n"
+            << "Created:  " << std::put_time(std::localtime(&created), "%H:%M:%S") << "\n";
+        print(out.str());
     }
 
     std::string usage() const override
@@ -173,10 +189,10 @@ public:
 
     void execute(std::stringstream&) override
     {
-        std::cout << "Commands:\n";
+        std::string text = "Commands:\n";
         for (const auto& entry : commands)
-            std::cout << "  " << entry.second->usage() << "\n";
-        std::cout << "  quit\n";
+            text += "  " + entry.second->usage() + "\n";
+        print(text + "  quit\n");
     }
 
     std::string usage() const override

@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include "Commands.h"
+#include "Console.h"
 #include "Scheduler.h"
 
 class CommandLineInterfacePrivate {
@@ -27,11 +28,11 @@ CommandLineInterfacePrivate::CommandLineInterfacePrivate(Scheduler &scheduler) :
 
 void CommandLineInterface::run() 
 {
-    std::cout << "=== Mini Job Scheduler CLI ===\nType 'help' for commands.\n\n";
+    print("=== Mini Job Scheduler CLI ===\nType 'help' for commands.\n\n");
     std::string line;
 
     while (true) {
-        std::cout << "> " << std::flush;
+        print("> ");
         if (!std::getline(std::cin, line) || line == "quit") {
             d->scheduler.stop();
             break;
@@ -47,6 +48,6 @@ void CommandLineInterface::run()
         if (it != d->commands.end())
             it->second->execute(ss);
         else
-            std::cout << "Unknown command. Type 'help'.\n";
+            print("Unknown command. Type 'help'.\n");
     }
 }

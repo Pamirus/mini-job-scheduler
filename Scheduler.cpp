@@ -50,7 +50,7 @@ void Scheduler::stop()
     if (!d->isRunning) return;
 
     d->queue.stop();
-    for (int i = 0; i < d->workers.size(); ++i) {
+    for (size_t i = 0; i < d->workers.size(); ++i) {
         std::unique_ptr<Worker>& worker = d->workers.at(i);
         worker->stop();
     }

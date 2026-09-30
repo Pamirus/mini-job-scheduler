@@ -31,7 +31,8 @@ class JobPrivate;
 //!
 //! A job carries no work of its own: a worker simulates it by sleeping for the
 //! job's duration. The queue and the workers update its status as it moves
-//! through its lifecycle.
+//! through its lifecycle. The status can be read and changed from any thread;
+//! everything else is fixed when the job is created.
 class Job
 {
 public:
@@ -48,6 +49,13 @@ public:
 
     //! Moves the job to a new lifecycle state.
     void setStatus(JobStatus status);
+
+    //! @brief Moves the job from @p from to @p to, but only if it is still in @p from.
+    //!
+    //! The check and the change are one atomic step, so when two threads try to
+    //! move the job out of the same state, only one of them succeeds.
+    //! @return @c true if the job was in @p from and is now in @p to.
+    bool changeStatus(JobStatus from, JobStatus to);
 
     //! Priority as upper-case text, e.g. @c "HIGH".
     std::string priorityToString() const;

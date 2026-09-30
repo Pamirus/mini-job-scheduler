@@ -59,11 +59,8 @@ bool JobQueue::cancel(uint16_t id)
     std::lock_guard<std::mutex> lock(d->mutex);
     auto it = std::find_if(d->allJobsHistory.begin(), d->allJobsHistory.end(),
                            [id](const std::shared_ptr<Job>& job) { return job->getId() == id; });
-    if (it != d->allJobsHistory.end() && (*it)->getStatus() == JobStatus::PENDING) {
-        (*it)->setStatus(JobStatus::CANCELLED);
-        return true;
-    }
-    return false;
+    return it != d->allJobsHistory.end()
+        && (*it)->changeStatus(JobStatus::PENDING, JobStatus::CANCELLED);
 }
 
 std::shared_ptr<Job> JobQueue::findById(uint16_t id) const

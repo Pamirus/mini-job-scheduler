@@ -2,9 +2,10 @@
 
 #include <atomic>
 #include <chrono>
-#include <iostream>
+#include <string>
 #include <thread>
 
+#include "Console.h"
 #include "Job.h"
 #include "JobQueue.h"
 
@@ -26,21 +27,18 @@ void WorkerPrivate::run()
         std::shared_ptr<Job> job = queue.pop();
         if (!job)
             break;
-
-        if (job->getStatus() == JobStatus::CANCELLED) {
+        if (!job->changeStatus(JobStatus::PENDING, JobStatus::RUNNING)) {
             continue;
         }
 
-        job->setStatus(JobStatus::RUNNING);
-        std::cout << "\n[Worker " << static_cast<int>(id) << "] Started Job "
-                  << job->getId() << " (" << job->getName() << ")" << std::endl;
+        print("\n[Worker " + std::to_string(id) + "] Started Job "
+              + std::to_string(job->getId()) + " (" + job->getName() + ")\n");
 
         std::this_thread::sleep_for(std::chrono::seconds(job->getDuration()));
 
-        if (job->getStatus() == JobStatus::RUNNING) {
-            job->setStatus(JobStatus::COMPLETED);
-            std::cout << "\n[Worker " << static_cast<int>(id) << "] Finished Job "
-                      << job->getId() << std::endl;
+        if (job->changeStatus(JobStatus::RUNNING, JobStatus::COMPLETED)) {
+            print("\n[Worker " + std::to_string(id) + "] Finished Job "
+                  + std::to_string(job->getId()) + "\n");
         }
     }
 }

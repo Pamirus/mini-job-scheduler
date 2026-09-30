@@ -12,6 +12,7 @@ add_executable(mini-job-scheduler main.cpp
     Scheduler.h Scheduler.cpp
     CommandLineInterface.h CommandLineInterface.cpp
     Commands.h Commands.cpp
+    Console.h Console.cpp
 )
 
 target_compile_options(mini-job-scheduler PRIVATE -Wall -Wextra -Wpedantic)

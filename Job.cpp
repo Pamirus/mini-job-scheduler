@@ -1,5 +1,6 @@
 #include "Job.h"
 
+#include <atomic>
 #include <string>
 
 class JobPrivate {
@@ -12,12 +13,12 @@ public:
         , status(JobStatus::PENDING)
         , creationTime(std::time(nullptr)) {}
 
-    uint16_t    id;
-    std::string name;
-    uint16_t    duration;
-    JobPriority priority;
-    JobStatus   status;
-    std::time_t creationTime;
+    uint16_t               id;
+    std::string            name;
+    uint16_t               duration;
+    JobPriority            priority;
+    std::atomic<JobStatus> status;
+    std::time_t            creationTime;
 };
 
 Job::Job(uint16_t id, std::string name, uint16_t durationSec, JobPriority priority)
@@ -37,6 +38,11 @@ std::time_t Job::getCreationTime() const {  return d->creationTime; }
 void Job::setStatus(JobStatus status)
 {
     d->status = status;
+}
+
+bool Job::changeStatus(JobStatus from, JobStatus to)
+{
+    return d->status.compare_exchange_strong(from, to);
 }
 
 std::string Job::priorityToString() const
