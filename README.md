@@ -73,7 +73,68 @@ ID    NAME           PRIORITY  STATUS
 | `JobQueue`             | Thread-safe priority queue (`std::mutex` + `std::condition_variable`) |
 | `Worker`               | Runs on its own `std::thread`, pops jobs from the queue and runs them |
 | `Scheduler`            | Owns the queue and the workers; exposes add/start/stop/cancel         |
-| `CommandLineInterface` | Parses user commands and forwards them to the `Scheduler`             |
+| `CommandLineInterface` | Reads input lines and runs the matching `Command`                     |
+| `Command`              | One class per CLI command; `registerCommands` maps names to them      |
+
+### Class diagram
+
+```mermaid
+classDiagram
+    class CommandLineInterface {
+        +run()
+    }
+    class Command {
+        <<interface>>
+        +execute(args)
+        +usage() string
+    }
+    class SchedulerCommand {
+        <<abstract>>
+    }
+    class Scheduler {
+        +addJob(name, duration, priority)
+        +start()
+        +stop()
+        +cancelJob(id) bool
+        +listJobs() vector~Job~
+        +findJob(id) Job
+    }
+    class JobQueue {
+        +push(job)
+        +pop() Job
+        +cancel(id) bool
+        +findById(id) Job
+        +getAllJobs() vector~Job~
+        +stop()
+    }
+    class Worker {
+        +start()
+        +stop()
+    }
+    class Job {
+        uint16_t id
+        string name
+        uint16_t duration
+        JobPriority priority
+        JobStatus status
+        time_t creationTime
+    }
+
+    CommandLineInterface *-- "*" Command : CommandMap
+    Command <|-- SchedulerCommand
+    Command <|-- HelpCommand
+    SchedulerCommand <|-- AddCommand
+    SchedulerCommand <|-- ListCommand
+    SchedulerCommand <|-- StartCommand
+    SchedulerCommand <|-- StopCommand
+    SchedulerCommand <|-- CancelCommand
+    SchedulerCommand <|-- StatusCommand
+    SchedulerCommand --> Scheduler
+    Scheduler *-- JobQueue
+    Scheduler *-- "1..*" Worker
+    Worker --> JobQueue : pop()
+    JobQueue o-- "*" Job
+```
 
 ### PIMPL
 
@@ -93,8 +154,5 @@ so `const` member functions can't modify the private data by accident.
 
 - C++14 standard library (`std::thread`, `std::mutex`, `std::condition_variable`, `std::atomic`)
 - PIMPL idiom
+- Command pattern for dispatching CLI commands
 - CMake
-
-## Roadmap
-
-- Command dispatch through polymorphism instead of an `if/else` chain
