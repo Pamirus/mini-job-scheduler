@@ -41,6 +41,8 @@ public:
     ~Job();
     Job(const Job&) = delete;
     Job& operator=(const Job&) = delete;
+    Job(Job&&) = delete;
+    Job& operator=(Job&&) = delete;
 
     uint16_t       getId() const;            //!< Id assigned by the scheduler.
     std::string    getName() const;          //!< Name given when the job was added.

@@ -22,11 +22,11 @@ public:
     //! @param id    Number shown in the worker's log messages.
     //! @param queue Queue to take jobs from; must outlive the worker.
     Worker(uint8_t id, JobQueue& queue);
-
-    //! Stops the worker; see stop().
     ~Worker();
     Worker(const Worker&) = delete;
     Worker& operator=(const Worker&) = delete;
+    Worker(Worker&&) = delete;
+    Worker& operator=(Worker&&) = delete;
 
     //! @brief Starts the worker thread.
     //! @pre The worker is not running.

@@ -23,6 +23,8 @@ public:
     ~CommandLineInterface();
     CommandLineInterface(const CommandLineInterface&) = delete;
     CommandLineInterface& operator=(const CommandLineInterface&) = delete;
+    CommandLineInterface(CommandLineInterface&&) = delete;
+    CommandLineInterface& operator=(CommandLineInterface&&) = delete;
 
     //! @brief Reads and runs commands until @c quit or the end of input.
     //!

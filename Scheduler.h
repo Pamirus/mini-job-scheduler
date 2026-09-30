@@ -20,11 +20,11 @@ class Scheduler {
 public:
     //! Creates a scheduler that runs @p workerCount workers once started.
     explicit Scheduler(size_t workerCount = 2);
-
-    //! Stops the scheduler; see stop().
     ~Scheduler();
     Scheduler(const Scheduler&) = delete;
     Scheduler& operator=(const Scheduler&) = delete;
+    Scheduler(Scheduler&&) = delete;
+    Scheduler& operator=(Scheduler&&) = delete;
 
     //! @brief Queues a job that runs for @p duration seconds.
     //!

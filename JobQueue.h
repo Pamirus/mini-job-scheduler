@@ -22,6 +22,8 @@ public:
     ~JobQueue();
     JobQueue(const JobQueue&) = delete;
     JobQueue& operator=(const JobQueue&) = delete;
+    JobQueue(JobQueue&&) = delete;
+    JobQueue& operator=(JobQueue&&) = delete;
 
     //! Adds @p job to the queue and wakes up one waiting worker.
     void push(std::shared_ptr<Job> job);
